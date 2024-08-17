@@ -1,32 +1,23 @@
-# Stage 1: Build the Go binary
-FROM golang:1.20-alpine AS builder
+FROM golang:1.22 as builder
 
-# Set the working directory
 WORKDIR /app
 
-# Copy the Go modules and dependencies files
 COPY go.mod go.sum ./
 
-# Download dependencies
 RUN go mod download
 
-# Copy the source code
-COPY . .
+COPY ./app ./app
 
-# Build the Go binary
-RUN go build -o myapp .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./app/main.go
 
-# Stage 2: Create the final lightweight image
-FROM alpine:3.18
+FROM alpine:latest
 
-# Set the working directory
 WORKDIR /app
 
-# Copy the Go binary from the builder stage
-COPY --from=builder /app/golang-jenkin .
+RUN apk --no-cache add ca-certificates tzdata libc6-compat
 
-# Expose the application port (if necessary)
-EXPOSE 8080
+ENV TZ=Asia/Bangkok
 
-# Run the Go binary
-CMD ["./golang-jenkin"]
+COPY --from=builder /app/main .
+
+ENTRYPOINT ["./main"]

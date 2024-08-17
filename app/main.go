@@ -9,7 +9,7 @@ func main() {
 		return c.SendString("Hello, Fiber!")
 	})
 
-	err := router.Listen(":8080")
+	err := router.Listen(":8082")
 	if err != nil {
 		panic("start server error")
 	}

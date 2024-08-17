@@ -1,0 +1,10 @@
+K8S_DEPLOYMENT_FILE = k8s/deployment.yaml
+
+run:
+	go run app/main.go
+
+tidy:
+	go mod tidy
+
+apply-deployment:
+	kubectl apply -f $(K8S_DEPLOYMENT_FILE)

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-jenkin
+  labels:
+    app: golang-jenkin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: golang-jenkin
+  template:
+    metadata:
+      labels:
+        app: golang-jenkin
+        version: $IMAGE_TAG
+    spec:
+      containers:
+        - name: golang-jenkin
+          image: 0054/golang-jenkin:$IMAGE_TAG
+          ports:
+            - containerPort: 8082
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
